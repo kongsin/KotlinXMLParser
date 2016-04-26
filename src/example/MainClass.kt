@@ -1,4 +1,5 @@
 import core.XMLParser
+import example.Book
 import example.Bookstore
 
 fun main(string: Array<String>) {
@@ -17,8 +18,7 @@ fun main(string: Array<String>) {
             "    <price>39.95</price>\n" +
             "  </book>\n" +
             "</bookstore>";
-    var book = Bookstore();
-    XMLParser().fromXML(xml, book) as Bookstore
+    var book = XMLParser().fromXML(xml, Bookstore()) as Bookstore
 
     book.book!!.forEach {
         book ->
