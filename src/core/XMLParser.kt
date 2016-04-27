@@ -4,12 +4,23 @@ import org.w3c.dom.Element
 import org.w3c.dom.NodeList
 import java.io.ByteArrayInputStream
 import java.lang.reflect.Field
+import java.net.URL
+import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
  * Created by kongsin on 26/4/2559.
  */
 class XMLParser {
+
+    fun fromXML(url : URL, obj : Any) : Any {
+        var scanner = Scanner(url.openStream())
+        var str = ""
+        while (scanner.hasNext()){
+            str+=scanner.nextLine()
+        }
+        return fromXML(str, obj)
+    }
 
     fun fromXML(xml: String, obj: Any): Any {
         var factory = DocumentBuilderFactory.newInstance()
@@ -63,7 +74,7 @@ class XMLParser {
             if (f.type.isArray) {
                 var ch = arrayOfNulls<Char?>(v.size)
                 for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent.toCharArray().get(i)
+                    ch[i] = v[i]!!.textContent.toCharArray()[i]
                 }
                 f.set(obj, ch);
             } else {
@@ -80,7 +91,7 @@ class XMLParser {
                 f.set(obj, ch);
             } else {
                 for (e in v) {
-                    f.setInt(obj, e!!.textContent.toInt());
+                    f.setInt(obj, e!!.textContent.trim().toInt());
                 }
             }
         } else if (type.startsWith(Short :: class.java.name)) {

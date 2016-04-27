@@ -1,6 +1,6 @@
 import core.XMLParser
-import example.Book
-import example.Bookstore
+import example.CATALOG
+import java.net.URL
 
 fun main(string: Array<String>) {
     var xml = "<bookstore>\n" +
@@ -18,14 +18,18 @@ fun main(string: Array<String>) {
             "    <price>39.95</price>\n" +
             "  </book>\n" +
             "</bookstore>";
-    var book = XMLParser().fromXML(xml, Bookstore()) as Bookstore
+    var catalog = XMLParser().fromXML(URL("http://www.w3schools.com/xml/cd_catalog.xml"), CATALOG()) as CATALOG
 
-    book.book!!.forEach {
-        book ->
-        println("---------------------")
-        println("TITLE : " + book.title)
-        println("AUTHOR : " + book.author)
-        println("YEAR : " + book.year)
-        println("PRICE : " + book.price)
-    }
+   var ncat = XMLParser().fromXML(XMLParser().toXML(catalog), CATALOG()) as CATALOG
+
+        ncat.CD!!.forEach {
+            cd ->
+            println(cd.TITLE)
+            println(cd.ARTIST)
+            println(cd.COMPANY)
+            println(cd.COUNTRY)
+            println(cd.PRICE)
+            println(cd.YEAR)
+        }
+
 }
