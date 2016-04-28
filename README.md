@@ -1,6 +1,11 @@
 # KotlinXMLParser
 ##### KotlinXMLParser is a library to map XML to an object or convert object to XML
 
+### Feature
+- Map XML to Object
+- Convert Object to XML String
+- Stream XML from URL and map to object
+
 ### There have XML string need to map to object
 ```
 var xml = "<bookstore>\n" +
