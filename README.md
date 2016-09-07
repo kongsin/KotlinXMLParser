@@ -7,7 +7,7 @@
 - Stream XML from URL and map to object
 
 ### There have XML string need to map to object
-```
+```Kotlin
 var xml = "<bookstore>\n" +
         "  <book category=\"children\">\n" +
         "    <title>Harry Potter</title>\n" +
@@ -27,14 +27,14 @@ var xml = "<bookstore>\n" +
 ```
 ### Bookstore object. must declare field name same with tag name that you need to map.
 
-```
+```Kotlin
 class Bookstore {
     @JvmField var book: Array<Book>? = null
 }
 
 ```
 ### Book object for store book detail.
-```
+```Kotlin
 class Book {
     @JvmField var title: String? = null
     @JvmField var author: String? = null
@@ -44,7 +44,7 @@ class Book {
 
 ```
 ### Lets go to map XML to object jsut very easy just one line.
-```
+```Kotlin
 var book = XMLParser().fromXML(xml, Bookstore()) as Bookstore
 
 // Print object to see the result
