@@ -45,7 +45,7 @@ class Book {
 ```
 ### Lets go to map XML to object jsut very easy just one line.
 ```Kotlin
-var book = XMLParser().fromXML(xml, Bookstore()) as Bookstore
+var book = XMLParser(Bookstore::class.java).fromXML(xml)
 
 // Print object to see the result
 book.book!!.forEach {  book ->
