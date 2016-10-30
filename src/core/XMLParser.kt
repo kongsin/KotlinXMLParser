@@ -7,200 +7,198 @@ import java.lang.reflect.Field
 import java.net.URL
 import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.reflect.KClass
 
 /**
  * Created by kongsin on 26/4/2559.
  */
-class XMLParser {
+class XMLParser<T>(var obj : Class<T>) {
 
-    fun fromXML(url : URL, obj : Any) : Any {
-        var scanner = Scanner(url.openStream())
+    fun fromXML(url : URL) : T {
+        val scanner = Scanner(url.openStream())
         var str = ""
         while (scanner.hasNext()){
             str+=scanner.nextLine()
         }
-        return fromXML(str, obj)
+        return fromXML(str)
     }
 
-    fun fromXML(xml: String, obj: Any): Any {
-        var factory = DocumentBuilderFactory.newInstance()
-        var builder = factory.newDocumentBuilder()
-        var strBuilder = StringBuilder()
+    fun fromXML(xml: String): T {
+        val factory = DocumentBuilderFactory.newInstance()
+        val builder = factory.newDocumentBuilder()
+        val strBuilder = StringBuilder()
         strBuilder.append(xml)
-        var byteStream = ByteArrayInputStream(strBuilder.toString().toByteArray())
-        var doc = builder.parse(byteStream)
+        val byteStream = ByteArrayInputStream(strBuilder.toString().toByteArray())
+        val doc = builder.parse(byteStream)
         doc.documentElement.normalize()
-        getNodeObject(doc.documentElement, obj)
-        return obj;
+        return getNodeObject(doc.documentElement, obj)
     }
 
-    private fun getNodeObject(element: Element, _obj: Any): Any {
-        var fields = _obj.javaClass.declaredFields
+    private fun <A>getNodeObject(element: Element, myObj : Class<A>): A {
+        val _obj = myObj.newInstance()
+        val fields = myObj.fields
         for (f in fields) {
             if (isNativeObject(f)) {
                 putValue(f, _obj, element)
             } else {
                 if (f.type.isArray) {
-                    var elm = getData(element.getElementsByTagName(f.name));
-                    if (elm.size > 0) {
-                        var tmpObject = java.lang.reflect.Array.newInstance(f.type.componentType, elm.size) as Array<Any>
+                    val elm = getData(element.getElementsByTagName(f.name))
+                    elm.size.let {
+                        val tmpObject = java.lang.reflect.Array.newInstance(f.type.componentType, elm.size) as Array<Any>
                         for (i in 0..tmpObject.size - 1) {
-                            tmpObject[i] = getNodeObject(elm[i] as Element, f.type.componentType.newInstance())
+                            tmpObject[i] = getNodeObject(elm[i] as Element, f.type.componentType)
                         }
-                        f.set(_obj, tmpObject);
+                        f.set(_obj, tmpObject)
                     }
                 } else {
-                    var tmpObject = getNodeObject(element, f.type.newInstance());
-                    f.set(_obj, tmpObject);
+                    val tmpObject = getNodeObject(element, f.type.componentType)
+                    f.set(_obj, tmpObject)
                 }
             }
         }
         return _obj
     }
 
+    fun getClass(c : Any) : KClass<Any> = c.javaClass.kotlin
+
     private fun getData(list: NodeList): Array<Element?> {
-        var e: Array<Element?> = arrayOfNulls(list.length)
-        if (e.size == 0) return e
-        for (i in 0..list.length - 1) {
-            e[i] = list.item(i) as Element?
+        val e: Array<Element?> = arrayOfNulls(list.length)
+        e.let {
+            for (i in 0..list.length - 1) {
+                e[i] = list.item(i) as Element?
+            }
         }
-        return e;
+        return e
     }
 
-    private fun putValue(f: Field, obj: Any, value: Element): Any {
-        var type = f.type.canonicalName;
-        var v = getData(value.getElementsByTagName(f.name));
-        if (type.startsWith(Char :: class.java.name)) {
-            if (f.type.isArray) {
-                var ch = arrayOfNulls<Char?>(v.size)
-                for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent.toCharArray()[i]
+    private fun <A>putValue(f: Field, obj: A, value: Element): A {
+        val type = f.type
+        val v = getData(value.getElementsByTagName(f.name))
+        when (type) {
+            Char::class.java ->
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<Char?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent.toCharArray()[i]
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.setChar(obj, e!!.textContent[0])
+                    }
                 }
-                f.set(obj, ch);
-            } else {
-                for (e in v) {
-                    f.setChar(obj, e!!.textContent[0]);
+            Int :: class.java ->
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<Int?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent.toInt()
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.setInt(obj, e!!.textContent.trim().toInt())
+                    }
+                }
+            Short :: class.java ->
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<Short?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent.toShort()
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.setShort(obj, e!!.textContent.toShort())
+                    }
+                }
+            Long :: class.java ->
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<Long?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent.toLong()
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.setLong(obj, e!!.textContent.toLong())
+                    }
+                }
+            Boolean :: class.java ->
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<Boolean?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent.toBoolean()
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.setBoolean(obj, e!!.textContent.toBoolean())
+                    }
+                }
+            Float :: class.java ->
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<Float?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent.toFloat()
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.setFloat(obj, e!!.textContent.toFloat())
+                    }
+                }
+            Double :: class.java ->
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<Double?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent.toDouble()
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.setDouble(obj, e!!.textContent.toDouble())
+                    }
+                }
+            String :: class.java ->
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<String?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.set(obj, e!!.textContent)
+                    }
                 }
             }
-        } else if (type.startsWith(Int :: class.java.name)) {
-            if (f.type.isArray) {
-                var ch = arrayOfNulls<Int?>(v.size)
-                for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent.toInt();
-                }
-                f.set(obj, ch);
-            } else {
-                for (e in v) {
-                    f.setInt(obj, e!!.textContent.trim().toInt());
-                }
-            }
-        } else if (type.startsWith(Short :: class.java.name)) {
-            if (f.type.isArray) {
-                var ch = arrayOfNulls<Short?>(v.size)
-                for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent.toShort();
-                }
-                f.set(obj, ch);
-            } else {
-                for (e in v) {
-                    f.setShort(obj, e!!.textContent.toShort());
-                }
-            }
-        } else if (type.startsWith(Long :: class.java.name)) {
-            if (f.type.isArray) {
-                var ch = arrayOfNulls<Long?>(v.size)
-                for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent.toLong();
-                }
-                f.set(obj, ch);
-            } else {
-                for (e in v) {
-                    f.setLong(obj, e!!.textContent.toLong());
-                }
-            }
-        } else if (type.startsWith(Boolean :: class.java.name)) {
-            if (f.type.isArray) {
-                var ch = arrayOfNulls<Boolean?>(v.size)
-                for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent.toBoolean();
-                }
-                f.set(obj, ch);
-            } else {
-                for (e in v) {
-                    f.setBoolean(obj, e!!.textContent.toBoolean());
-                }
-            }
-        } else if (type.startsWith(Float :: class.java.name)) {
-            if (f.type.isArray) {
-                var ch = arrayOfNulls<Float?>(v.size)
-                for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent.toFloat();
-                }
-                f.set(obj, ch);
-            } else {
-                for (e in v) {
-                    f.setFloat(obj, e!!.textContent.toFloat());
-                }
-            }
-        } else if (type.startsWith(Double :: class.java.name)) {
-            if (f.type.isArray) {
-                var ch = arrayOfNulls<Double?>(v.size)
-                for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent.toDouble();
-                }
-                f.set(obj, ch);
-            } else {
-                for (e in v) {
-                    f.setDouble(obj, e!!.textContent.toDouble());
-                }
-            }
-        } else if (type.startsWith(String :: class.java.name)) {
-            if (f.type.isArray) {
-                var ch = arrayOfNulls<String?>(v.size)
-                for (i in 0..ch.size - 1) {
-                    ch[i] = v[i]!!.textContent;
-                }
-                f.set(obj, ch);
-            } else {
-                for (e in v) {
-                    f.set(obj, e!!.textContent);
-                }
-            }
-        }
-        return obj;
+        return obj
     }
 
     private fun isNativeObject(f: Field): Boolean {
-        var type = f.type.canonicalName
-        if (type.startsWith(Char :: class.java.name)) {
-            return true;
-        } else if (type.startsWith(Int :: class.java.name)) {
-            return true;
-        } else if (type.startsWith(Short :: class.java.name)) {
-            return true;
-        } else if (type.startsWith(Long :: class.java.name)) {
-            return true;
-        } else if (type.startsWith(Float :: class.java.name)) {
-            return true;
-        } else if (type.startsWith(Double :: class.java.name)) {
-            return true;
-        } else if (type.startsWith(Boolean  :: class.java.name)) {
-            return true;
-        } else {
-            return type.startsWith(String :: class.java.name);
+        val type = f.type
+        when (type) {
+            Char :: class.java -> return true
+            Int :: class.java -> return true
+            Short :: class.java -> return true
+            Long :: class.java -> return true
+            Float :: class.java -> return true
+            Double :: class.java -> return true
+            Boolean  :: class.java -> return true
+            else -> return String :: class.java == type
         }
     }
 
     fun toXML(obj: Any): String {
-        var fields = obj.javaClass.declaredFields
-        var builder = StringBuilder()
+        val fields = obj.javaClass.declaredFields
+        val builder = StringBuilder()
         builder.append("\n")
         builder.append(openTag(obj.javaClass.simpleName))
         builder.append("\n")
         for (_f in fields) {
             if (isNativeObject(_f)) {
                 if (_f.type.isArray) {
-                    var data = _f.get(obj) as Array<*>
+                    val data = _f.get(obj) as Array<*>
                     for (o in data) {
                         builder.append("\n")
                         builder.append(openTag(_f.name))
@@ -217,12 +215,12 @@ class XMLParser {
                 }
             } else {
                 if (_f.type.isArray) {
-                    var data = _f.get(obj) as Array<*>
+                    val data = _f.get(obj) as Array<*>
                     for (o in data) {
                         builder.append(toXML(o as Any))
                     }
                 } else {
-                    var tmpObject = _f.get(obj)
+                    val tmpObject = _f.get(obj)
                     builder.append(toXML(tmpObject))
                 }
             }
@@ -233,7 +231,7 @@ class XMLParser {
     }
 
     private fun openTag(tagName: String): String {
-        var b = StringBuilder()
+        val b = StringBuilder()
         b.append("<")
         b.append(tagName)
         b.append(">")
@@ -241,7 +239,7 @@ class XMLParser {
     }
 
     private fun closeTag(tagName: String): String {
-        var b = StringBuilder()
+        val b = StringBuilder()
         b.append("</")
         b.append(tagName)
         b.append(">")
