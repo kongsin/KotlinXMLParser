@@ -1,4 +1,4 @@
-# KotlinXMLParser
+# KotlinXMLParser 1.0.4.1
 ##### KotlinXMLParser is a library to map XML to an object or convert object to XML
 
 ### Feature
