@@ -7,7 +7,6 @@ import java.lang.reflect.Field
 import java.net.URL
 import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
-import kotlin.reflect.KClass
 
 /**
  * Created by kongsin on 26/4/2559.
