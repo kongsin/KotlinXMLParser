@@ -168,7 +168,20 @@ class XMLParser<T>(var obj : Class<T>) {
                         f.set(obj, e!!.textContent)
                     }
                 }
+            Byte::class.java -> {
+                if (f.type.isArray) {
+                    val ch = arrayOfNulls<Byte?>(v.size)
+                    for (i in 0..ch.size - 1) {
+                        ch[i] = v[i]!!.textContent.toByte()
+                    }
+                    f.set(obj, ch)
+                } else {
+                    for (e in v) {
+                        f.setByte(obj, e!!.textContent.toByte())
+                    }
+                }
             }
+        }
         return obj
     }
 
