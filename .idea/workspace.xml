@@ -4,11 +4,10 @@
     <bookmark url="file://$PROJECT_DIR$/src/core/XMLParser.kt" line="48" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9956bbf6-abcc-4479-95dd-d09cb70fc237" name="Default" comment="&gt;&gt;">
+    <list default="true" id="9956bbf6-abcc-4479-95dd-d09cb70fc237" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/KXMLParser/META-INF/KXMLParser.kotlin_module" afterPath="$PROJECT_DIR$/out/production/KXMLParser/META-INF/KXMLParser.kotlin_module" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/core/XMLParser.kt" afterPath="$PROJECT_DIR$/src/core/XMLParser.kt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/example/MainClass.kt" afterPath="$PROJECT_DIR$/src/example/MainClass.kt" />
     </list>
     <ignored path="KXMLParser.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -42,8 +41,8 @@
       <file leaf-file-name="XMLParser.kt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/core/XMLParser.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="50" column="46" selection-start-line="50" selection-start-column="46" selection-end-line="50" selection-end-column="46" />
+            <state relative-caret-position="51">
+              <caret line="57" column="9" selection-start-line="57" selection-start-column="9" selection-end-line="57" selection-end-column="9" />
               <folding>
                 <element signature="e#14#251#0" expanded="true" />
               </folding>
@@ -553,7 +552,14 @@
       <option name="project" value="LOCAL" />
       <updated>1461701727245</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="update code">
+      <created>1477837028615</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1477837028615</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -604,7 +610,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="&gt;&gt;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&gt;&gt;" />
+    <MESSAGE value="update code" />
+    <option name="LAST_COMMIT_MESSAGE" value="update code" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1027,8 +1034,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/core/XMLParser.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="50" column="46" selection-start-line="50" selection-start-column="46" selection-end-line="50" selection-end-column="46" />
+        <state relative-caret-position="51">
+          <caret line="57" column="9" selection-start-line="57" selection-start-column="9" selection-end-line="57" selection-end-column="9" />
           <folding>
             <element signature="e#14#251#0" expanded="true" />
           </folding>

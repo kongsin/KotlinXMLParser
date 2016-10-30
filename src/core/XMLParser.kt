@@ -59,8 +59,6 @@ class XMLParser<T>(var obj : Class<T>) {
         return _obj
     }
 
-    fun getClass(c : Any) : KClass<Any> = c.javaClass.kotlin
-
     private fun getData(list: NodeList): Array<Element?> {
         val e: Array<Element?> = arrayOfNulls(list.length)
         e.let {
