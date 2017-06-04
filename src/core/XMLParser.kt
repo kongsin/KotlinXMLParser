@@ -50,7 +50,7 @@ class XMLParser<T>(var obj : Class<T>) {
                         f.set(_obj, tmpObject)
                     }
                 } else {
-                    val tmpObject = getNodeObject(element, f.type.componentType)
+                    val tmpObject = getNodeObject(element, f.type)
                     f.set(_obj, tmpObject)
                 }
             }
